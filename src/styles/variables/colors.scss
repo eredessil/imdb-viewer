@@ -1,0 +1,5 @@
+@use 'sass:color';
+
+$app-color-background: #000;
+$app-color-text: #fff;
+$app-color-text-muted: lighten($app-color-text, 30%);

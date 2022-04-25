@@ -1,0 +1,7 @@
+@use '../styles/variables/colors';
+
+.main-container {
+  text-align: center;
+  background-color: colors.$app-color-background;
+  min-height: 100vh;
+}
