@@ -1,0 +1,9 @@
+@use './vendor/imports';
+@use './typography/font';
+@use './componenets/grid';
+@use './componenets/header';
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
