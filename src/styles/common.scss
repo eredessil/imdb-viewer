@@ -2,6 +2,7 @@
 @use './typography/font';
 @use './componenets/grid';
 @use './componenets/header';
+@use './layout/search-result';
 
 * {
     -webkit-font-smoothing: antialiased;

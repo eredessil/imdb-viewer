@@ -26,7 +26,7 @@ export interface GetMovieResponse {
     vote_count: number,
 }
 
-interface Result {
+export interface Result {
     adult: boolean,
     backdrop_path: string,
     genre_ids: number[],
@@ -51,7 +51,7 @@ export interface GetSearchResponse {
     total_results: number
 }
 
-interface Genre {
+export interface Genre {
     id: number,
     name: string
 }

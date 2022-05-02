@@ -1,13 +1,72 @@
-import './App.scss';
+import {useEffect} from "react";
 import {Search} from "../components/search";
-import {Api} from "../api";
+import "./App.scss";
+import {searchMoviesClear, searchMoviesRequest} from "../redux/actions/search";
+import {useDispatch, useSelector} from "react-redux";
+import {getGenreRequest} from "../redux/actions/genres";
+import {Card} from "../components/card/Card";
+import {Genre} from "../components/genre/Genre";
+import {apiClient} from "../api";
+import {GetSearchResponse} from "../api/model";
 
-const api = new Api();
 function App() {
-    async function onSearch(value: string) {
-        if (value.length >= 3) return;
-        let data = await api.searchMovies(value);
-        console.log(data)
+    const dispatch = useDispatch();
+    const {data, noResult} = useSelector((state: any) => state.search);
+    const genresList = useSelector((state: any) => state.genres.data);
+
+
+    function onSearch(value: string) {
+        if (value.length >= 3) {
+            dispatch(searchMoviesRequest(value));
+        } else if (data.length) {
+            dispatch(searchMoviesClear());
+        }
+    }
+
+    useEffect(() => {
+        dispatch(getGenreRequest());
+    }, []);
+
+    function renderGenres(genre_ids: string[], genresList: object[]) {
+        const genres: any[] = genre_ids.map((genreId: any) => genresList.find((item: any) => {
+            return item.id === genreId
+        }));
+
+        console.log(genres)
+        return genres.map(((genre: any) => <Genre name={genre.name}></Genre>))
+    }
+
+    function getYear(year: string) {
+        if (year) {
+            return new Date(year).getFullYear().toString();
+        } else {
+            return 'Unknown'
+        }
+    }
+
+    async function handleCardClick(id: number) {
+
+        const movie = await apiClient.getMovie(id);
+        console.log(movie);
+    }
+
+    function renderCards(data: GetSearchResponse[]) {
+        if (noResult) {
+            return (<div>
+                <p>No result</p>
+            </div>)
+        }
+
+        return data?.map((data: any) => (
+            <Card
+                year={getYear(data.release_date)}
+                genres={[...renderGenres(data.genre_ids, genresList)]}
+                key={data.id}
+                poster={`${process.env.REACT_APP_IMAGE_URL}/t/p/w200${data?.poster_path}`}
+                title={data?.original_title}
+                handleCardClick={() => handleCardClick(data.id)}
+            />)
+        )
     }
 
     return (
@@ -25,20 +84,7 @@ function App() {
                     <Search onInputEnd={onSearch} timeout={800}/>
                 </div>
                 <div className="search-result">
-                    <div className="search-result-title">
-
-                    </div>
-
-                    <div className="search-result-card-container">
-                        <div className="search-result-card">
-                            <picture>
-                                <source srcSet={"https://via.placeholder.com/60"}/>
-                            </picture>
-                            <div className="card-title">
-                                <h4>Blade Runner</h4>
-                            </div>
-                        </div>
-                    </div>
+                    {renderCards(data)}
                 </div>
             </main>
         </div>

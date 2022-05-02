@@ -28,6 +28,8 @@ function Search({onInputEnd, timeout = 1500}: SearchProps) {
     const clear = () => {
         if (input.current) {
             input.current.value = '';
+            onInputEnd('');
+            setRemoveClassName(' hidden');
         }
     }
 

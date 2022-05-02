@@ -1,22 +1,24 @@
-import {GetGenresResponse, GetMovieResponse} from "./model";
+import {GetGenresResponse, GetMovieResponse, GetSearchResponse} from "./model";
 
-export class Api {
-    protected async makeRequest(uri: string, params: object = {}) {
+class Api {
+    static makeRequest(uri: string, params: object = {}) {
         const searchParams = new URLSearchParams({...params, api_key: `${process.env.REACT_APP_API_KEY}`});
         const url = `${process.env.REACT_APP_API_URL}/${uri}?${searchParams}`;
         return fetch(url).then(response => response.json());
     }
 
-    public async searchMovies(query: string) : Promise<GetMovieResponse> {
-        return await this.makeRequest('search/multi', {query});
+    public searchMovies(query: string) : Promise<GetSearchResponse> {
+        return Api.makeRequest(`search/movie`, {query});
     }
 
-    public async getMovie(id: string) : Promise<GetMovieResponse> {
-        return await this.makeRequest(`movie/${id}`);
+    public getMovie(id: number) : Promise<GetMovieResponse> {
+        return Api.makeRequest(`movie/${id}`);
     }
 
-    public async getGenres() : Promise<GetGenresResponse> {
-        return await this.makeRequest('genre/movie/list');
+    public getGenres() : Promise<GetGenresResponse> {
+        return Api.makeRequest('genre/movie/list');
     }
 }
 
+const apiClient = new Api();
+export {apiClient};
