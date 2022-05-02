@@ -29,7 +29,7 @@ export default function search(state = INITIAL_VALUE, {type, payload}: SearchMov
                 ...state,
                 isFetching: false,
                 data: payload,
-                noResult: !payload.length,
+                noResult: !payload?.length,
             }
         }
 

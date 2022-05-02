@@ -40,4 +40,23 @@
             opacity: 0;
         }
     }
+
+    @media screen and (max-width: 768px){
+        flex-direction: column;
+        width: 100%;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        .search-input {
+            position: relative;
+            width: 100%;
+            display: flex;
+        }
+
+        .search-clear {
+            top: unset;
+            bottom: .5rem;
+            transform: none;
+            right: 2rem;
+        }
+    }
 }
