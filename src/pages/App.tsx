@@ -7,7 +7,7 @@ import {getGenreRequest} from "../redux/actions/genres";
 import {Card} from "../components/card/Card";
 import {Genre} from "../components/genre/Genre";
 import {apiClient} from "../api";
-import {GetMovieResponse, GetSearchResponse} from "../api/model";
+import {GetSearchResponse} from "../api/model";
 import Modal from 'react-modal';
 
 interface InitialModalData {
@@ -36,11 +36,14 @@ const customStyles = {
 };
 
 function App() {
-    const initialModalData: InitialModalData | null = null;
     const dispatch = useDispatch();
     const {data, noResult} = useSelector((state: any) => state.search);
     const genresList = useSelector((state: any) => state.genres.data);
     const [modalData, setModalData] = useState<InitialModalData | null>(null)
+
+    useEffect(() => {
+        dispatch(getGenreRequest());
+    }, [dispatch]);
 
     function onSearch(value: string) {
         if (value.length >= 3) {
@@ -50,16 +53,12 @@ function App() {
         }
     }
 
-    useEffect(() => {
-        dispatch(getGenreRequest());
-    }, []);
-
     function renderGenres(genre_ids: string[], genresList: object[]) {
         const genres: any[] = genre_ids.map((genreId: any) => genresList.find((item: any) => {
             return item.id === genreId
         }));
 
-        return genres.map(((genre: any) => <Genre name={genre.name}></Genre>))
+        return genres.map(((genre: any) => <Genre name={genre.name} />))
     }
 
     function getYear(year: string) {
@@ -74,10 +73,6 @@ function App() {
         const movie: any = await apiClient.getMovie(id);
         console.log(movie);
         setModalData(movie);
-        openModal(movie)
-    }
-
-    function openModal(movie: GetMovieResponse) {
     }
 
     function renderCards(data: GetSearchResponse[]) {
@@ -112,8 +107,8 @@ function App() {
 
         function getRuntime(runtime: number) {
             const hours = Math.floor(runtime / 60);
-            const miutes = runtime % 60;
-            return `${hours}h ${miutes}m`;
+            const minutes = runtime % 60;
+            return `${hours}h ${minutes}m`;
         }
 
         return <div>
@@ -133,10 +128,13 @@ function App() {
                     <p className={'production-countries'}><strong>Production Countries: </strong>
                         {production_countries.map((item: any) => `${item.name} `)}</p>
                     <p><strong>Genres</strong>: {genres?.map((item: any) => <Genre name={item.name}/>)}</p>
-                    <a className='imdb-url' href={`https://www.imdb.com/title/${imdb_id}`} target='_blank'>imdb</a>
-
+                    <a
+                        className='imdb-url'
+                        rel="noreferrer"
+                        href={`https://www.imdb.com/title/${imdb_id}`}
+                        target='_blank'
+                    >imdb</a>
                 </div>
-
             </div>
         </div>
     }
